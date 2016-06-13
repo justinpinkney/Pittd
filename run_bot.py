@@ -1,5 +1,5 @@
 #!venv/bin/python
-import bot
+from bot import bot
 
 # Start polling
-bot.my_bot.polling()
+bot.run()

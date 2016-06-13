@@ -78,5 +78,10 @@ def validated_user(user_id):
         print('{} is not a valid user id.'.format(user_id))
         return False
 
-if __name__ == '__main__':
+
+def run():
     my_bot.polling()
+
+
+if __name__ == '__main__':
+    run()
