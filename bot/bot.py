@@ -4,21 +4,21 @@ import requests
 import telebot
 import logging
 from datetime import datetime
-from config import ALLOWED_USERS, TOKEN, record_directory, record_file
+from bot.config import ALLOWED_USERS, TOKEN, record_directory, record_file
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 date_format = '%Y %b %d, %H-%M-%S'
-bot = telebot.TeleBot(TOKEN)
+my_bot = telebot.TeleBot(TOKEN)
 
 
-@bot.message_handler(commands=['start', 'help'])
+@my_bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    bot.reply_to(message, "hello there!")
+    my_bot.reply_to(message, "hello there!")
 
 
-@bot.message_handler(content_types=['text', 'photo'])
+@my_bot.message_handler(content_types=['text', 'photo'])
 def process(message):
     if validated_user(message.from_user.id):
         metadata = extract_metadata(message)
@@ -49,7 +49,7 @@ def process_photo(message, metadata):
 
 
 def get_photo_url(message):
-    photo_file = bot.get_file(message.photo[-1].file_id).file_path
+    photo_file = my_bot.get_file(message.photo[-1].file_id).file_path
     return 'https://api.telegram.org/file/bot{}/{}'.format(TOKEN, photo_file)
 
 
@@ -79,4 +79,4 @@ def validated_user(user_id):
         return False
 
 if __name__ == '__main__':
-    bot.polling()
+    my_bot.polling()
