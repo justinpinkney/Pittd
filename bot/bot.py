@@ -38,7 +38,7 @@ def process_text(message, metadata):
 
 def process_photo(message, metadata):
     folder = os.path.join(record_directory,
-                          metadata['datetime'].strftime('%Y %m'))
+                          metadata['datetime'].strftime('%Y-%m'))
     time_string = metadata['datetime'].strftime(date_format)
     file_name = '{} - {}.jpg'.format(time_string, metadata['user'])
 
