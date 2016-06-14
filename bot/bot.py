@@ -1,5 +1,7 @@
 import shutil
 import os
+from time import sleep
+
 import requests
 import telebot
 import logging
@@ -90,6 +92,7 @@ def validated_user(user_id):
 
 def run():
     while True:
+        sleep(1)
         try:
             my_bot.polling(timeout=TIMEOUT)
         except ReadTimeout as e:
