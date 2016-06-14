@@ -3,7 +3,11 @@ import os
 import requests
 import telebot
 import logging
+import sys
 from datetime import datetime
+
+from requests.exceptions import ReadTimeout
+
 from bot.config import ALLOWED_USERS, TOKEN, record_directory, record_file
 
 logging.basicConfig(level=logging.DEBUG,
@@ -11,6 +15,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 date_format = '%Y %b %d, %H-%M-%S'
 my_bot = telebot.TeleBot(TOKEN)
+TIMEOUT = 100
 
 
 @my_bot.message_handler(commands=['start', 'help'])
@@ -26,6 +31,10 @@ def process(message):
             process_text(message, metadata)
         elif message.content_type == 'photo':
             process_photo(message, metadata)
+    else:
+        my_bot.reply_to(message,
+                        "Sorry {}, I'm not allowed to talk to you").format(
+            message.from_user.id)
 
 
 def process_text(message, metadata):
@@ -80,8 +89,16 @@ def validated_user(user_id):
 
 
 def run():
-    my_bot.polling()
+    while True:
+        try:
+            my_bot.polling(timeout=TIMEOUT)
+        except ReadTimeout as e:
+            print("Got a timeout error, restarting the bot...")
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
+            print("Restarting the bot...")
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' \
+               '':
     run()
