@@ -1,5 +1,5 @@
 #!venv/bin/python
-from bot import bot
+from bot import telegram_bot
 
 # Start polling
-bot.run()
+telegram_bot.run()

@@ -1,16 +1,14 @@
 import shutil
 import os
 from time import sleep
-
 import requests
 import telebot
 import logging
 import sys
 from datetime import datetime
-
 from requests.exceptions import ReadTimeout
 
-from bot.config import ALLOWED_USERS, TOKEN, record_directory, record_file
+from bot.config import ALLOWED_USERS, TOKEN, RECORD_DIRECTORY, RECORD_FILE
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -18,29 +16,31 @@ logging.basicConfig(level=logging.DEBUG,
 date_format = '%Y %b %d, %H-%M-%S'
 my_bot = telebot.TeleBot(TOKEN)
 TIMEOUT = 100
+SLEEP_TIME = 1
 
 
 @my_bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    my_bot.reply_to(message, "hello there!")
+    my_bot.reply_to(message, "Hello there!")
 
 
 @my_bot.message_handler(content_types=['text', 'photo'])
 def process(message):
-    if validated_user(message.from_user.id):
+    if message.from_user.id in ALLOWED_USERS:
         metadata = extract_metadata(message)
         if message.content_type == 'text':
             process_text(message, metadata)
         elif message.content_type == 'photo':
             process_photo(message, metadata)
     else:
+        print('{} is not a valid user id.'.format(message.from_user.id))
         my_bot.reply_to(message,
-                        "Sorry {}, I'm not allowed to talk to you").format(
-            message.from_user.id)
+                        "Sorry {}, I'm not allowed to talk to you".format(
+                            message.from_user.id))
 
 
 def process_text(message, metadata):
-    with open(record_file, 'a', encoding='utf-8') as f:
+    with open(RECORD_FILE, 'a', encoding='utf-8') as f:
         time_string = metadata['datetime'].strftime(date_format)
         for line in message.text.split('\n'):
             f.write(
@@ -48,20 +48,28 @@ def process_text(message, metadata):
 
 
 def process_photo(message, metadata):
-    folder = os.path.join(record_directory,
-                          metadata['datetime'].strftime('%Y-%m'))
-    time_string = metadata['datetime'].strftime(date_format)
-    file_name = '{} - {}.jpg'.format(time_string, metadata['user'])
+    download_file(generate_photo_path(RECORD_DIRECTORY,
+                                      metadata['datetime'],
+                                      metadata['user']),
+                  get_photo_url(message))
+
+
+def generate_photo_path(directory, photo_datetime, user):
+    folder = os.path.join(directory,
+                          photo_datetime.strftime('%Y-%m'))
+    time_string = photo_datetime.strftime(date_format)
+    file_name = '{} - {}.jpg'.format(time_string, user)
 
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    download_file(os.path.join(folder, file_name), get_photo_url(message))
+    return os.path.join(folder, file_name)
 
 
 def get_photo_url(message):
     photo_file = my_bot.get_file(message.photo[-1].file_id).file_path
-    return 'https://api.telegram.org/file/bot{}/{}'.format(TOKEN, photo_file)
+    return 'https://api.telegram.org/file/bot{}/{}'.format(my_bot.token,
+                                                           photo_file)
 
 
 def download_file(save_location, url):
@@ -75,6 +83,7 @@ def download_file(save_location, url):
 
 
 def extract_metadata(message):
+    """Extract the date and user from a message."""
     metadata = {
         'datetime': datetime.fromtimestamp(message.date),
         'user': message.from_user.first_name,
@@ -82,17 +91,10 @@ def extract_metadata(message):
     return metadata
 
 
-def validated_user(user_id):
-    if user_id in ALLOWED_USERS:
-        return True
-    else:
-        print('{} is not a valid user id.'.format(user_id))
-        return False
-
-
 def run():
+    """Run the Bot."""
     while True:
-        sleep(1)
+        sleep(SLEEP_TIME)
         try:
             my_bot.polling(timeout=TIMEOUT)
         except ReadTimeout as e:
