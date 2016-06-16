@@ -104,6 +104,5 @@ def run():
             print("Restarting the bot...")
 
 
-if __name__ == '__main__' \
-               '':
+if __name__ == '__main__':
     run()
