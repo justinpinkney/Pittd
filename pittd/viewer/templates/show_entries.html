@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+  <ul class=entries>
+  {% for entry in entries %}
+    <li><h2>{{ entry.date }}</h2>
+        {% for item in entry.content %}
+            {% if item.type == "text" %}
+                <p> {{ item.message }} </p>
+            {% elif item.type == "photo" %}
+                <img src= "{{ item.path }}" >
+            {% endif %}
+        {% endfor %}
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+  {% endfor %}
+  </ul>
+{% endblock %}
