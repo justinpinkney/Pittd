@@ -52,7 +52,7 @@ def test_process_text_message():
 
 
 def test_process_photo_message():
-    photo_url = '''https://upload.wikimedia.org/wikipedia/commons/6/61/Snow_Monkeys%2C_Nagano%2C_Japan.JPG'''
+    photo_url = '''https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Snow_Monkeys%2C_Nagano%2C_Japan.JPG/320px-Snow_Monkeys%2C_Nagano%2C_Japan.JPG'''
     # Stub out the get_photo_url call as we don't want to access the Telegram API
     post_date = 0
     user_id = 1

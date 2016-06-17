@@ -61,7 +61,7 @@ def test_photo_post():
 
 
 def test_photo_post_to_file():
-    photo_url = '''https://upload.wikimedia.org/wikipedia/commons/6/61/Snow_Monkeys%2C_Nagano%2C_Japan.JPG'''
+    photo_url = '''https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Snow_Monkeys%2C_Nagano%2C_Japan.JPG/320px-Snow_Monkeys%2C_Nagano%2C_Japan.JPG'''
     test_time = datetime.fromtimestamp(0)
     user = 'Test person'
     this_post = posts.PhotoPost(test_time, user)
