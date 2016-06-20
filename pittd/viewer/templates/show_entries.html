@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
   <ul class=entries>
-  {% for entry in entries %}
-    <li><h2>{{ entry.date }}</h2>
-        {% for item in entry.content %}
-            {% if item.type == "text" %}
-                <p> {{ item.message }} </p>
-            {% elif item.type == "photo" %}
-                <img src= "{{ item.path }}" >
+  {% for key, value in entries.items() %}
+    <li><h2>{{ key }}</h2>
+        {% for item in value %}
+            {% if item.post_type == "text" %}
+                <p> {{ item.content }} </p>
+            {% elif item.post_type == "photo" %}
+                <img src= "{{ url_for('download_file', filename=item.content) }}" >
             {% endif %}
         {% endfor %}
   {% else %}
