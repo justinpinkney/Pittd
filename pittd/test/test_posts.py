@@ -49,26 +49,32 @@ def test_text_post_from_file():
 
 
 def test_photo_post():
-    expected_string = os.path.join("1970-01",
-                                   "1970 Jan 01, 00-00-00 - Test person.jpg")
     test_time = datetime.fromtimestamp(0)
     user = 'Test person'
-    this_post = posts.PhotoPost(test_time, user)
+    content = 'image.jpg'
+    this_post = posts.PhotoPost(test_time, user, content)
 
     assert this_post.post_time == test_time
     assert this_post.user == user
-    assert this_post.content == expected_string
+    assert this_post.content == content
 
 
 def test_photo_post_to_file():
     photo_url = '''https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Snow_Monkeys%2C_Nagano%2C_Japan.JPG/320px-Snow_Monkeys%2C_Nagano%2C_Japan.JPG'''
     test_time = datetime.fromtimestamp(0)
     user = 'Test person'
-    this_post = posts.PhotoPost(test_time, user)
-    this_post.to_file(TEST_DATA_DIRECTORY, photo_url)
+    this_post = posts.PhotoPost.from_url(test_time, user)
+    this_post.download(TEST_DATA_DIRECTORY, photo_url)
 
     assert os.path.isfile(os.path.join(TEST_DATA_DIRECTORY, this_post.content))
 
 
-def test_photo_post_from_file():
+def test_photo_post_from_file_name():
+    #TODO
     pass
+
+def test_photo_post_from_file_metadata():
+    #TODO
+    pass
+
+# TODO test badly formed posts

@@ -13,38 +13,62 @@ test_photo = {'type': 'photo',
               'user': 'Ciara',
               'path': 'static/test_image.jpg'}
 
-fake_data = [
-    {
-        'date': '2016 02 04',
-        'content': [test_message, test_photo]
-    },
-
-    {
-        'date': '2016 02 06',
-        'content': [test_photo, test_message, test_message]
-    }
-]
+fake_data = {
+    '2016 02 04': [test_message, test_photo],
+    '2016 02 06': [test_photo, test_message, test_message]
+}
 
 """
+import os
+from pittd.posts import PhotoPost, TextPost
+
+
+def parse_photo_directory(photo_directory):
+    # For each photo in directory, extract message object, append to list
+    photo_list =[]
+    for dirpath, dirnames, filenames in os.walk(photo_directory):
+        for filename in filenames:
+            this_photo = os.path.join(dirpath, filename)
+            photo_post = PhotoPost.from_file(this_photo)
+            if photo_post:
+                photo_list.append(photo_post)
+            else:
+                print("Could not load photo {}".format(this_photo))
+    return photo_list
+
+
+def parse_text_log(record_file):
+    # For each line in the file, extract a message object, append to list
+    text_list = []
+    with open(record_file, 'r') as text_log:
+        for line in text_log.readlines():
+            text_post = TextPost.from_file(line)
+            if text_post:
+                text_list.append(text_post)
+            else:
+                print("Could not load text {}".format(line))
+    return text_list
+
+
+def add_posts(data, posts):
+    for post in posts:
+        post_time = post.post_time
+        if post_time in data.keys():
+            data[post_time].append(post)
+        else:
+            data[post_time] = [post,]
 
 
 class Parser(object):
     def __init__(self, photo_directory, record_file):
         self.photo_directory = photo_directory
         self.record_file = record_file
+        self.data = {}
+        self.update()
 
     def update(self):
-        self.parse_text()
-        self.parse_photo()
-        # Combine the lists and sort by date
-        pass
-
-    def parse_text(self, record_file):
-        # For each line in the file, extract a message object, append to list
-        pass
-
-    def parse_photo(self, photo_directory):
-        # For each photo in directory, extract message object, append to list
-        pass
-
-
+        text_list = parse_text_log(self.record_file)
+        photo_list = parse_photo_directory(self.photo_directory)
+        # Combine the lists, sort by date and make final structure
+        add_posts(self.data, text_list)
+        add_posts(self.data, photo_list)

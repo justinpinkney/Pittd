@@ -37,9 +37,12 @@ class TextPost(Post):
     @classmethod
     def from_file(cls, input_string):
         # "1970 Jan 01, 00-00-00 - Test person - message_body\n"
-        datetime_string, remainder = input_string.split(Post.delim, 1)
-        post_time = datetime.strptime(datetime_string, Post.date_format)
-        post_user, post_content = remainder.split(Post.delim, 1)
+        try:
+            datetime_string, remainder = input_string.split(Post.delim, 1)
+            post_time = datetime.strptime(datetime_string, Post.date_format)
+            post_user, post_content = remainder.split(Post.delim, 1)
+        except ValueError:
+            return None
         return TextPost(post_time, post_user, post_content.strip('\n'))
 
     def to_file(self, destination_file):
@@ -52,24 +55,51 @@ class TextPost(Post):
 
 
 class PhotoPost(Post):
-    def __init__(self, time, user):
-        super(PhotoPost, self).__init__('photo', time, user, None)
+    def __init__(self, time, user, content):
+        super(PhotoPost, self).__init__('photo', time, user, content)
 
-        folder = os.path.join(self.post_time.strftime(Post.month_format))
-        time_string = self.post_time.strftime(Post.date_format)
+
+    @classmethod
+    def from_url(cls, time, user):
+
+        folder = os.path.join(time.strftime(Post.month_format))
+        time_string = time.strftime(Post.date_format)
         file_name = Post.delim.join(('{}', '{}.jpg')).format(time_string, user)
-        self.content = os.path.join(folder, file_name)
+        content = os.path.join(folder, file_name)
+        return PhotoPost(time, user, content)
 
     @classmethod
     def from_file(cls, path):
-        pass
+        # Check the filename format
+        root, filename = os.path.split(path)
+        this_post = cls.parse_photo_name(filename)
+        if not this_post:
+            this_post = cls.parse_photo_metadata(filename)
+        return this_post
 
-    def to_file(self, record_directory, url):
+
+    @classmethod
+    def parse_photo_name(cls, filename):
+        try:
+            datetime_string, user = filename.split(Post.delim, 1)
+            post_time = datetime.strptime(datetime_string, Post.date_format)
+            user = user.strip('.jpg')
+            return PhotoPost(post_time, user, filename)
+        except ValueError:
+            # The filename is not the correct format
+            return None
+
+    def download(self, record_directory, url):
         folder = os.path.join(record_directory, os.path.split(self.content)[0])
         if not os.path.exists(folder):
             os.makedirs(folder)
 
         download_file(os.path.join(record_directory, self.content), url)
+
+    @classmethod
+    def parse_photo_metadata(cls, filename):
+        #TODO
+        return None
 
 
 def download_file(save_location, url):

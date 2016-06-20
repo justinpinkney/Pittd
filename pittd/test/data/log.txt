@@ -1,0 +1,2 @@
+1970 Jan 01, 00-00-00 - Test person 1 - message_body 1
+1980 Jan 01, 00-00-00 - Test person 2 - message_body 2 - followed by some more text

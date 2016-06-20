@@ -43,9 +43,9 @@ def process_text(message):
 
 
 def process_photo(message):
-    this_post = posts.PhotoPost(datetime.fromtimestamp(message.date),
-                                message.from_user.first_name)
-    this_post.to_file(RECORD_DIRECTORY, get_photo_url(message))
+    this_post = posts.PhotoPost.from_url(datetime.fromtimestamp(message.date),
+                                            message.from_user.first_name)
+    this_post.download(RECORD_DIRECTORY, get_photo_url(message))
 
 
 def get_photo_url(message):
