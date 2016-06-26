@@ -70,9 +70,8 @@ class PhotoPost(Post):
 
     @classmethod
     def from_file(cls, path):
-        # Check the filename format
-        root, filename = os.path.split(path)
-        this_post = cls.parse_photo_name(filename)
+        # Path should be relative to the photo_directory
+        this_post = cls.parse_photo_name(path)
         if not this_post:
             this_post = cls.parse_photo_metadata(filename)
         return this_post
@@ -81,7 +80,8 @@ class PhotoPost(Post):
     @classmethod
     def parse_photo_name(cls, filename):
         try:
-            datetime_string, user = filename.split(Post.delim, 1)
+            root, ending = os.path.split(filename)
+            datetime_string, user = ending.split(Post.delim, 1)
             post_time = datetime.strptime(datetime_string, Post.date_format)
             user = user.strip('.jpg')
             return PhotoPost(post_time, user, filename)
