@@ -4,9 +4,9 @@ from datetime import datetime
 from time import sleep
 import telebot
 from requests.exceptions import ReadTimeout
-from .. import posts
 
-from pittd.bot.config import ALLOWED_USERS, TOKEN, RECORD_DIRECTORY, RECORD_FILE
+from pittd.config import ALLOWED_USERS, TOKEN, RECORD_DIRECTORY, RECORD_FILE
+from pittd import posts
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
