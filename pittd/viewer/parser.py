@@ -29,6 +29,7 @@ def parse_photo_directory(photo_directory):
     for dirpath, dirnames, filenames in os.walk(photo_directory):
         for filename in filenames:
             this_photo = os.path.join(dirpath, filename)
+            this_photo = os.path.relpath(this_photo, photo_directory)
             photo_post = PhotoPost.from_file(this_photo)
             if photo_post:
                 photo_list.append(photo_post)
