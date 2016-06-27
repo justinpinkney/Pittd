@@ -34,6 +34,7 @@ def test_bad_text_log():
 def test_photo():
     photo_list = parser.parse_photo_directory(TEST_DATA_DIRECTORY)
     assert len(photo_list) is 2
+    # TODO this test can fail depending on the order the posts come back
     validate_post(photo_list[0],
                   'photo',
                   datetime(1970, 1, 1),
