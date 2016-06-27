@@ -73,7 +73,7 @@ class PhotoPost(Post):
         # Path should be relative to the photo_directory
         this_post = cls.parse_photo_name(path)
         if not this_post:
-            this_post = cls.parse_photo_metadata(filename)
+            this_post = cls.parse_photo_metadata(path)
         return this_post
 
 
