@@ -53,7 +53,7 @@ def parse_text_log(record_file):
 
 def add_posts(data, posts):
     for post in posts:
-        post_time = post.post_time
+        post_time = post.post_time.date()
         if post_time in data.keys():
             data[post_time].append(post)
         else:

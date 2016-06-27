@@ -92,3 +92,4 @@ ENV/
 
 /pittd/bot/config.py
 /.idea/
+/pittd/config.py
