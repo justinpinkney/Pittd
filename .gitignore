@@ -90,6 +90,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
-/pittd/bot/config.py
+/pittd/config.py
 /.idea/
 /pittd/config.py

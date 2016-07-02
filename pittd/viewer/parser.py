@@ -20,6 +20,8 @@ fake_data = {
 
 """
 import os
+from collections import OrderedDict
+
 from pittd.posts import PhotoPost, TextPost
 
 
@@ -41,7 +43,7 @@ def parse_photo_directory(photo_directory):
 def parse_text_log(record_file):
     # For each line in the file, extract a message object, append to list
     text_list = []
-    with open(record_file, 'r') as text_log:
+    with open(record_file, 'r', encoding='utf-8') as text_log:
         for line in text_log.readlines():
             text_post = TextPost.from_file(line)
             if text_post:
@@ -56,6 +58,7 @@ def add_posts(data, posts):
         post_time = post.post_time.date()
         if post_time in data.keys():
             data[post_time].append(post)
+            data[post_time].sort(key=lambda x: x.post_time)
         else:
             data[post_time] = [post,]
 
@@ -73,3 +76,6 @@ class Parser(object):
         # Combine the lists, sort by date and make final structure
         add_posts(self.data, text_list)
         add_posts(self.data, photo_list)
+        # Sort by date
+        self.data = OrderedDict(sorted(self.data.items(), key=lambda x: x[0]))
+
