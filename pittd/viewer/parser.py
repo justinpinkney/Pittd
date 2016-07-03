@@ -71,6 +71,7 @@ class Parser(object):
         self.update()
 
     def update(self):
+        self.data = {}
         text_list = parse_text_log(self.record_file)
         photo_list = parse_photo_directory(self.photo_directory)
         # Combine the lists, sort by date and make final structure
