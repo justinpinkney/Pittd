@@ -1,5 +1,6 @@
 import logging
 import sys
+import traceback
 from datetime import datetime
 from time import sleep
 import telebot
@@ -13,7 +14,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 my_bot = telebot.TeleBot(TOKEN)
 TIMEOUT = 100
-SLEEP_TIME = 1
+SLEEP_TIME = 5
 
 
 @my_bot.message_handler(commands=['start', 'help'])
@@ -64,6 +65,7 @@ def run():
             print("Got a timeout error, restarting the bot...")
         except:
             print("Unexpected error:", sys.exc_info()[0])
+            print(traceback.print_exc())
             print("Restarting the bot...")
 
 

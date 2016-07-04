@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, redirect, url_for
 from pittd.viewer.parser import Parser
 from pittd.config import RECORD_DIRECTORY, RECORD_FILE
 
@@ -7,6 +7,7 @@ parser = Parser(RECORD_DIRECTORY, RECORD_FILE)
 
 
 @app.route('/')
+@app.route('/index')
 def hello_world():
     return render_template('show_entries.html', entries=parser.data)
 
@@ -20,6 +21,7 @@ def download_file(filename):
 @app.route('/update')
 def update():
     parser.update()
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
