@@ -1,17 +1,26 @@
 {% extends "layout.html" %}
 {% block body %}
   <ul class=entries>
-  {% for key, value in entries.items() %}
-    <li><h2>{{ key }}</h2>
-        {% for item in value %}
-            {% if item.post_type == "text" %}
-                <p> {{ item.content }} </p>
-            {% elif item.post_type == "photo" %}
-                <img src= "{{ url_for('download_file', filename=item.content) }}" >
+  {% for date, posts in entries.items() %}
+    <li><h2>{{ date }}</h2>
+        {% for post in posts %}
+            {% if post.post_type == "text" %}
+                <p> {{ post.content }} </p>
+            {% elif post.post_type == "photo" %}
+                <img src= "{{ url_for('download_file', filename=post.content) }}" >
             {% endif %}
         {% endfor %}
   {% else %}
-    <li><em>Unbelievable.  No entries here so far</em>
+    <li><em>No posts found</em>
   {% endfor %}
   </ul>
+
+  <div id="post_nav">
+        {% if has_prev %}
+            <a href="{{ url_for('index', page=curr_page-1) }}">Previous posts</a>
+        {% endif %}
+        {% if has_next %}
+            <a href="{{ url_for('index', page=curr_page+1) }}">Next posts</a>
+        {% endif %}
+  </div>
 {% endblock %}
