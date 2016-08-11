@@ -12,22 +12,23 @@ parser = Parser(RECORD_DIRECTORY, RECORD_FILE)
 def paginate(ordered_dict, current_page, per_page):
     """Return a subset of an ordered dict for pagination."""
     total_posts = len(ordered_dict)
-    if current_page*per_page > total_posts:
+    if current_page * per_page > total_posts:
         # TODO throw an error
         return {}, False, False
 
     has_prev = current_page > 0
-    has_next = (current_page + 1)*per_page < total_posts
+    has_next = (current_page + 1) * per_page < total_posts
 
     if has_next:
         return (OrderedDict(islice(ordered_dict.items(),
-                              current_page * per_page,
-                              (current_page + 1) * per_page)),
+                                   current_page * per_page,
+                                   (current_page + 1) * per_page)),
                 has_next,
                 has_prev)
     else:
         return (OrderedDict(islice(ordered_dict.items(),
-                              current_page * per_page)),
+                                   current_page * per_page,
+                                   None)),
                 has_next,
                 has_prev)
 
