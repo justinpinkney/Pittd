@@ -1,12 +1,15 @@
 from collections import OrderedDict
-
+from itertools import islice
+import configparser
 from flask import Flask, render_template, send_from_directory, redirect, url_for
 from pittd.viewer.parser import Parser
-from pittd.config import RECORD_DIRECTORY, RECORD_FILE, POSTS_PER_PAGE
-from itertools import islice
+# Load config options
+config = configparser.ConfigParser()
+config.read(['pittd/config.ini', 'pittd/user_config.ini'])
+
 
 app = Flask(__name__)
-parser = Parser(RECORD_DIRECTORY, RECORD_FILE)
+parser = Parser(config['log']['RECORD_DIRECTORY'], config['log']['RECORD_FILE'])
 
 
 def paginate(ordered_dict, current_page, per_page):
@@ -38,7 +41,8 @@ def paginate(ordered_dict, current_page, per_page):
 @app.route('/index/<int:page>')
 def index(page=0):
     [entries_to_display, has_next, has_prev] = paginate(parser.data, page,
-                                                        POSTS_PER_PAGE)
+                                                        config['log'][
+                                                            'POSTS_PER_PAGE'])
     return render_template('show_entries.html',
                            entries=entries_to_display,
                            curr_page=page,
@@ -48,7 +52,7 @@ def index(page=0):
 
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
-    return send_from_directory(RECORD_DIRECTORY,
+    return send_from_directory(config['log']['RECORD_DIRECTORY'],
                                filename, as_attachment=True)
 
 
