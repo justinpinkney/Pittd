@@ -11,7 +11,9 @@ from pittd import posts
 # Load config options
 config = configparser.ConfigParser()
 config.read(['pittd/config.ini', 'pittd/user_config.ini'])
-
+ALLOWED_USERS = config['bot']['ALLOWED_USERS'].split(';')
+RECORD_FILE = config['log']['RECORD_FILE']
+RECORD_DIRECTORY = config['log']['RECORD_DIRECTORY']
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -28,7 +30,7 @@ def send_welcome(message):
 
 @my_bot.message_handler(content_types=['text', 'photo'])
 def process(message):
-    if message.from_user.id in config['bot']['ALLOWED_USERS']:
+    if message.from_user.id in ALLOWED_USERS:
         if message.content_type == 'text':
             process_text(message)
         elif message.content_type == 'photo':
@@ -44,13 +46,13 @@ def process_text(message):
     this_post = posts.TextPost(datetime.fromtimestamp(message.date),
                                message.from_user.first_name,
                                message.text)
-    this_post.to_file(config['log']['RECORD_FILE'])
+    this_post.to_file(RECORD_FILE)
 
 
 def process_photo(message):
     this_post = posts.PhotoPost.from_url(datetime.fromtimestamp(message.date),
                                             message.from_user.first_name)
-    this_post.download(config['log']['RECORD_DIRECTORY'], get_photo_url(message))
+    this_post.download(RECORD_DIRECTORY, get_photo_url(message))
 
 
 def get_photo_url(message):

@@ -6,10 +6,12 @@ from pittd.viewer.parser import Parser
 # Load config options
 config = configparser.ConfigParser()
 config.read(['pittd/config.ini', 'pittd/user_config.ini'])
-
+RECORD_DIRECTORY = config['log']['RECORD_DIRECTORY']
+RECORD_FILE = config['log']['RECORD_FILE']
+POSTS_PER_PAGE = config['log']['POSTS_PER_PAGE']
 
 app = Flask(__name__)
-parser = Parser(config['log']['RECORD_DIRECTORY'], config['log']['RECORD_FILE'])
+parser = Parser(RECORD_DIRECTORY, RECORD_FILE)
 
 
 def paginate(ordered_dict, current_page, per_page):
@@ -41,8 +43,7 @@ def paginate(ordered_dict, current_page, per_page):
 @app.route('/index/<int:page>')
 def index(page=0):
     [entries_to_display, has_next, has_prev] = paginate(parser.data, page,
-                                                        config['log'][
-                                                            'POSTS_PER_PAGE'])
+                                                        POSTS_PER_PAGE)
     return render_template('show_entries.html',
                            entries=entries_to_display,
                            curr_page=page,
@@ -52,7 +53,7 @@ def index(page=0):
 
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
-    return send_from_directory(config['log']['RECORD_DIRECTORY'],
+    return send_from_directory(RECORD_DIRECTORY,
                                filename, as_attachment=True)
 
 
