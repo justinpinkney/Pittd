@@ -1,5 +1,10 @@
 h1, h2, p {
-font-family: "sans-serif";
+    font-family: "sans-serif";
+}
+
+img {
+    width: 49%;
+    padding: 10px;
 }
 
 

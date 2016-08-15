@@ -1,15 +1,36 @@
 {% extends "layout.html" %}
 {% block body %}
   {% for date, posts in entries.items() %}
+    {% set prev_user = 'The first!' %}
+    <div class="row">
     <div class="post_date"><h3>{{ date }}</h3>
         {% for post in posts %}
+            {% if post.user is equalto prev_user %}
+
+                    <p>No user icon</p>
+
+            {% else %}
+                <div class="row">
+                    <div class="col-sm-3 user_id">
+                        <p><em>{{ post.user }}</em> </p>
+                    </div>
+                    <div class="col-sm-9 user_posts">
+                {% set prev_user = post.user %}
+            {% endif %}
+
+
             {% if post.post_type == "text" %}
-                <p> <em>{{ post.user }}</em> - {{post.content }} </p>
+                <p> {{post.content }} </p>
             {% elif post.post_type == "photo" %}
                 <img src= "{{ url_for('download_file', filename=post.content) }}" >
             {% endif %}
+
         {% endfor %}
     </div>
+    </div>
+    </div>
+    </div>
+
   {% else %}
     <li><em>No posts found</em>
   {% endfor %}
