@@ -48,8 +48,9 @@ def index(page=0):
 
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
+    # Replace \\ with / so Flask is happy on windows too.
     return send_from_directory(RECORD_DIRECTORY,
-                               filename, as_attachment=True)
+                               filename.replace('\\','/'), as_attachment=True)
 
 
 @app.route('/update')
