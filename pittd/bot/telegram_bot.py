@@ -1,18 +1,24 @@
 import logging
 import sys
 import traceback
+import configparser
 from datetime import datetime
 from time import sleep
 import telebot
 from requests.exceptions import ReadTimeout
 
-from pittd.config import ALLOWED_USERS, TOKEN, RECORD_DIRECTORY, RECORD_FILE
 from pittd import posts
+# Load config options
+config = configparser.ConfigParser()
+config.read(['pittd/config.ini', 'pittd/user_config.ini'])
+ALLOWED_USERS = config['bot']['ALLOWED_USERS'].split(';')
+RECORD_FILE = config['log']['RECORD_FILE']
+RECORD_DIRECTORY = config['log']['RECORD_DIRECTORY']
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-my_bot = telebot.TeleBot(TOKEN)
+my_bot = telebot.TeleBot(config['bot']['TOKEN'])
 TIMEOUT = 100
 SLEEP_TIME = 5
 

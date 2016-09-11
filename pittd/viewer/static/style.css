@@ -1,3 +1,14 @@
 h1, h2, p {
-font-family: "Garamond";
+    font-family: "sans-serif";
+}
+
+img {
+    width: 49%;
+    padding: 10px;
+}
+
+
+.post_date {
+    border: 1px solid #DDD;
+    padding: 10px;
 }

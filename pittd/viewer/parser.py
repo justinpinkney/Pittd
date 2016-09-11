@@ -31,7 +31,7 @@ def parse_photo_directory(photo_directory):
     for dirpath, dirnames, filenames in os.walk(photo_directory):
         for filename in filenames:
             this_photo = os.path.join(dirpath, filename)
-            this_photo = os.path.relpath(this_photo, photo_directory)
+            this_photo = os.path.relpath(this_photo, photo_directory).replace('\\','/')
             photo_post = PhotoPost.from_file(this_photo)
             if photo_post:
                 photo_list.append(photo_post)
@@ -78,5 +78,7 @@ class Parser(object):
         add_posts(self.data, text_list)
         add_posts(self.data, photo_list)
         # Sort by date
-        self.data = OrderedDict(sorted(self.data.items(), key=lambda x: x[0]))
+        post_list = sorted(self.data.items(), key=lambda x: x[0])
+        post_list.reverse()
+        self.data = OrderedDict(post_list)
 
