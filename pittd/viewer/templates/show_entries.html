@@ -1,26 +1,47 @@
 {% extends "layout.html" %}
 {% block body %}
-  <ul class=entries>
   {% for date, posts in entries.items() %}
-    <li><h2>{{ date }}</h2>
+    {% set prev_user = 'The first!' %}
+    <div class="row">
+    <div class="post_date"><h3>{{ date }}</h3>
         {% for post in posts %}
+            {% if post.user is not equalto prev_user %}
+                {% if loop.index is not equalto 1 %}
+                    </div>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-sm-2 user_id">
+                        <p><em>{{ post.user }}</em> </p>
+                    </div>
+                    <div class="col-sm-10 user_posts">
+                {% set prev_user = post.user %}
+            {% endif %}
+
             {% if post.post_type == "text" %}
-                <p> {{ post.content }} </p>
+                <p> {{post.content }} </p>
             {% elif post.post_type == "photo" %}
                 <img src= "{{ url_for('download_file', filename=post.content) }}" >
             {% endif %}
+
         {% endfor %}
+    </div>
+    </div>
+    </div>
+    </div>
+
   {% else %}
     <li><em>No posts found</em>
   {% endfor %}
-  </ul>
 
-  <div id="post_nav">
+
+  <div id="post_nav" class="btn-group" role="group">
         {% if has_prev %}
-            <a href="{{ url_for('index', page=curr_page-1) }}">Previous posts</a>
+            <a class="btn btn-primary" href="{{ url_for('index', page=curr_page-1) }}">Previous posts</a>
         {% endif %}
         {% if has_next %}
-            <a href="{{ url_for('index', page=curr_page+1) }}">Next posts</a>
+            <a class="btn btn-primary" href="{{ url_for('index', page=curr_page+1) }}">Next posts</a>
         {% endif %}
   </div>
 {% endblock %}

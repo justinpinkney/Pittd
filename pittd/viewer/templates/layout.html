@@ -16,7 +16,17 @@
   <body>
     <div class=container>
       <h1>Welcome to Pittd!</h1>
-      {% block body %}{% endblock %}
+
+      <div class="row">
+        <div class="col-sm-8 entries">
+          {% block body %}{% endblock %}
+        </div>
+        <div class="col-sm-3 col-sm-offset1 sidebar">
+          <p>Test</p>
+          <p>Test</p>
+          <p>Test</p>
+        </div>
+      </div>
     </div>
 
     <!-- JQuery -->
