@@ -5,10 +5,10 @@ from flask import Flask, render_template, send_from_directory, redirect, url_for
 from pittd.viewer.parser import Parser
 # Load config options
 config = configparser.ConfigParser()
-config.read(['pittd/config.ini', 'pittd/user_config.ini'])
+config.read(['config.ini', 'user_config.ini'])
 RECORD_DIRECTORY = config['log']['RECORD_DIRECTORY']
 RECORD_FILE = config['log']['RECORD_FILE']
-POSTS_PER_PAGE = config['log']['POSTS_PER_PAGE']
+POSTS_PER_PAGE = int(config['viewer']['POSTS_PER_PAGE'])
 
 app = Flask(__name__)
 parser = Parser(RECORD_DIRECTORY, RECORD_FILE)
