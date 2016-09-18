@@ -11,7 +11,7 @@ from pittd import posts
 # Load config options
 config = configparser.ConfigParser()
 config.read(['pittd/config.ini', 'pittd/user_config.ini'])
-ALLOWED_USERS = config['bot']['ALLOWED_USERS'].split(';')
+ALLOWED_USERS = [int(id_string) for id_string in config['bot']['ALLOWED_USERS'].split(';')]
 RECORD_FILE = config['log']['RECORD_FILE']
 RECORD_DIRECTORY = config['log']['RECORD_DIRECTORY']
 

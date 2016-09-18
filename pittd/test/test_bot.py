@@ -39,6 +39,7 @@ def test_invalid_user():
 
     assert not os.path.isfile(TEST_LOG_FILE)
 
+# TODO valid user test
 
 def test_process_text_message():
     post_date = 0
